@@ -9,9 +9,12 @@
 # 4 - afficher le nombre de produits par catégorie
 # 5 - quitter le programme
 
-import sqlite3, csv
+import csv
+import sqlite3
 from sqlite3 import Error
+
 dbName = 'bar'
+
 
 def connexion(dbName):
     try:
@@ -21,10 +24,11 @@ def connexion(dbName):
         conn.commit()
         return conn, cursor
     except Error as e:
-        print("Une erreur s'est produite: "+e)
+        print("Une erreur s'est produite: " + e)
         return False
 
-def checkIfImported(dbName) :
+
+def checkIfImported(dbName):
     conn, cursor = connexion(dbName)
     try:
         cursor.execute("SELECT count(id) FROM boissons;")
@@ -34,18 +38,17 @@ def checkIfImported(dbName) :
                 boiss = csv.reader(csvfile, delimiter=';')
                 bsns = []
                 query = "INSERT INTO Boissons(nom, categorie) values (? , ?)"
-                for row in boiss :
+                for row in boiss:
                     name, cat = row[0].split(',')
                     bsns.append([name, cat])
                 cursor.executemany(query, bsns)
                 conn.commit()
             return True
-        else:
-            return True
-    except Error as e :
+    except Error as e:
         print("Une erreur s'est produite: " + e)
     finally:
         conn.close()
+
 
 def showByCat(dbName, cat):
     conn, cursor = connexion(dbName)
@@ -53,19 +56,20 @@ def showByCat(dbName, cat):
         cursor.execute("SELECT id, nom FROM Boissons WHERE categorie = ?;", (cat,))
         boissons = cursor.fetchall()
         for boisson in boissons:
-            print(str(boisson[0])+" : "+boisson[1])
+            print(str(boisson[0]) + " : " + boisson[1])
     except Error as e:
         print("Une erreur s'est produite: " + e)
     finally:
         conn.close()
 
+
 def numberOfEach(dbName):
     conn, cursor = connexion(dbName)
     try:
-        for cat in range(1,4):
+        for cat in range(1, 4):
             cursor.execute("SELECT COUNT(id) FROM Boissons WHERE categorie = ?;", (cat,))
             nb = cursor.fetchone()
-            print("Il y a " + str(nb[0]) + " boissons dans la catégorie "+ str(cat))
+            print("Il y a " + str(nb[0]) + " boissons dans la catégorie " + str(cat))
     except Error as e:
         print("Une erreur s'est produite: " + e)
     finally:
@@ -74,7 +78,7 @@ def numberOfEach(dbName):
 
 checkIfImported(dbName)
 choice = 0
-while choice != 5 :
+while choice != 5:
     choice = input('''
                 1 - afficher la liste des bières ( catégorie 1)
                 2 - afficher le liste des soft ( catégorie 2)   
@@ -90,4 +94,3 @@ while choice != 5 :
         showByCat(dbName, 3)
     elif choice == str(4):
         numberOfEach(dbName)
-
