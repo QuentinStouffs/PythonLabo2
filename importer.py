@@ -78,7 +78,7 @@ def numberOfEach(dbName):
 
 checkIfImported(dbName)
 choice = 0
-while choice != 5:
+while choice != '5':
     choice = input('''
                 1 - afficher la liste des bières ( catégorie 1)
                 2 - afficher le liste des soft ( catégorie 2)   
